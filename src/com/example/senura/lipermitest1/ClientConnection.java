@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -27,6 +28,12 @@ public class ClientConnection {
     
     private static TestService remoteObject=null;
     private static boolean isServerCameOnline=false;
+    
+    //to calculate the gets per sec
+    static long startMilisecs=0;
+    static int getCount=0;
+    static boolean isgetCountCalculated=false;
+    
     
     public static void main(String[] args) {   
         setTimerToCheckServerAvailability();
@@ -65,7 +72,7 @@ public class ClientConnection {
     
     
     
-      private static String getHTML(String urlToRead) throws Exception {
+  static String getHTML(String urlToRead) throws Exception {
       StringBuilder result = new StringBuilder();
       URL url = new URL(urlToRead);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -80,15 +87,47 @@ public class ClientConnection {
    }
       
       
-      public static void sendGet(String urlToRead){
-        
-        try {
-            urlToRead=ClientConnection.getHTML(urlToRead);
-        } catch (Exception ex) {
-            Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(urlToRead);
-      }
+//      public static String sendGet(String urlToRead, boolean countTime){
+//        
+//       
+//        if(!countTime)
+//        {
+//                try {
+//               urlToRead=ClientConnection.getHTML(urlToRead);
+//           } catch (Exception ex) {
+//               Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
+//           }
+//             
+//            System.out.println(urlToRead);
+//        }
+//        else if(!isgetCountCalculated){
+//            
+//               try {
+//               urlToRead=ClientConnection.getHTML(urlToRead);
+//           } catch (Exception ex) {
+//               Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
+//           }
+//
+//           getCount++;
+//           
+//           long timeElapsed=System.currentTimeMillis()-startMilisecs;
+//           
+//           //measuring for 10secs
+//           if((timeElapsed/1000)>=10){
+//               isgetCountCalculated=true;
+//               System.out.println("get count = "+getCount+" gets per 10secs");
+//               
+//               //re init
+//               getCount=0; startMilisecs=0;
+//               
+//               return "10Secs gone";
+//           }
+//           
+//           return "still counting";
+//        }
+//        
+//        return "nothing";
+//      }
       
       
       private static void checkURLAvailable(){
@@ -96,9 +135,12 @@ public class ClientConnection {
           try{
           
           if(remoteObject.isHavingHostURL()) {
+              
+            if(!isgetCountCalculated)countNumOfConPerSec();///////
+              
             String sampleUrl=remoteObject.getURL();
             System.out.println(sampleUrl);
-            ClientConnection.sendGet(sampleUrl);
+            GETRequestHandlers.sendGet(sampleUrl);
         }
         else
             System.out.println("Not having a URL");
@@ -137,6 +179,38 @@ public class ClientConnection {
           };
 
           timer.schedule(myTask, 2000, 2000);
+      }
+      
+      
+      private static void setTimerToCountGets(String sampleUrl){
+          Timer timer = new Timer();
+          TimerTask myTask = new TimerTask() {
+              @Override
+              public void run() {
+                  
+                  if(GETRequestHandlers.sendGetsToCalculateTimeElapsed(sampleUrl).equals("10Secs gone")){
+                     
+                  timer.cancel();
+                  }
+              }
+          };
+
+          timer.schedule(myTask, 2000, 2000);
+      }
+      
+      
+      private static void countNumOfConPerSec(){
+         
+          if(startMilisecs==0)
+          startMilisecs= System.currentTimeMillis();
+         
+         if(remoteObject.isHavingHostURL()) {
+            String sampleUrl=remoteObject.getURL();
+            
+            
+         setTimerToCountGets(sampleUrl);
+         }
+         
       }
       
       
