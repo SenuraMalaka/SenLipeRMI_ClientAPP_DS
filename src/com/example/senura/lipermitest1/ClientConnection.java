@@ -26,10 +26,10 @@ import org.w3c.dom.css.Counter;
 public class ClientConnection {
     
     private static TestService remoteObject=null;
+    private static boolean isServerCameOnline=false;
     
-    public static void main(String[] args) {
-        
-      setClient();
+    public static void main(String[] args) {   
+        setTimerToCheckServerAvailability();
     }
     
     
@@ -43,6 +43,7 @@ public class ClientConnection {
        
         try {
             client = new Client(remoteHost, portWasBinded, callHandler);
+            isServerCameOnline=true;
         } catch (IOException ex) {
             System.out.println("server is not online");
         }
@@ -54,7 +55,7 @@ public class ClientConnection {
         
         System.out.println(remoteObject.getResponse("Hey babe.."));
         
-            setTimer();
+            setTimerToCheckURLAvailability();
 
         }
     }
@@ -90,19 +91,6 @@ public class ClientConnection {
       }
       
       
-      private static void setTimer(){
-          Timer timer = new Timer();
-          TimerTask myTask = new TimerTask() {
-              @Override
-              public void run() {
-                  checkURLAvailable();
-                 
-              }
-          };
-
-          timer.schedule(myTask, 2000, 2000);
-      }
-      
       private static void checkURLAvailable(){
       
           try{
@@ -120,6 +108,40 @@ public class ClientConnection {
           }
           
       }
+      
+      
+      
+      //Timers
+      private static void setTimerToCheckURLAvailability(){
+          Timer timer = new Timer();
+          TimerTask myTask = new TimerTask() {
+              @Override
+              public void run() {
+                  checkURLAvailable();
+                 
+              }
+          };
+
+          timer.schedule(myTask, 2000, 2000);
+      }
+      
+      
+      private static void setTimerToCheckServerAvailability(){
+          Timer timer = new Timer();
+          TimerTask myTask = new TimerTask() {
+              @Override
+              public void run() {
+                  setClient();
+                  if(isServerCameOnline) timer.cancel();
+              }
+          };
+
+          timer.schedule(myTask, 2000, 2000);
+      }
+      
+      
+      
+      
     
     
     
