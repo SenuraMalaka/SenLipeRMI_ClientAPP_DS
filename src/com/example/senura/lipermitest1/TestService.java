@@ -5,10 +5,13 @@
  */
 package com.example.senura.lipermitest1;
 
+
 /**
  *
  * @author senura
  */
 public interface TestService {
     public String getResponse(String data);
+    public boolean isHavingHostURL();
+    public String getURL();
 }
