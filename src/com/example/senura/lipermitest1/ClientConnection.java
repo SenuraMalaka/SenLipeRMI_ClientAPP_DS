@@ -10,43 +10,56 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.lipermi.handler.CallHandler;
 import net.sf.lipermi.net.Client;
+import org.w3c.dom.css.Counter;
 
 /**
  *
  * @author senura
  */
 public class ClientConnection {
-    public static void main(String[] args) throws IOException {
+    
+    private static TestService remoteObject=null;
+    
+    public static void main(String[] args) {
         
+      setClient();
+    }
+    
+    
+    private static void setClient(){
         
-        
-         CallHandler callHandler = new CallHandler();
+        CallHandler callHandler = new CallHandler();
         String remoteHost = "192.168.1.4";
         int portWasBinded = 58882;
-
-        Client client = new Client(remoteHost, portWasBinded, callHandler);
+        
+        Client client=null;
+       
+        try {
+            client = new Client(remoteHost, portWasBinded, callHandler);
+        } catch (IOException ex) {
+            System.out.println("server is not online");
+        }
         
         
-        TestService remoteObject;
+        if(client!=null){
         remoteObject =
                 (TestService) client.getGlobal(TestService.class);
         
         System.out.println(remoteObject.getResponse("Hey babe.."));
         
-        if(remoteObject.isHavingHostURL()) {
-            String sampleUrl=remoteObject.getURL();
-            System.out.println(sampleUrl);
-            ClientConnection.sendGet(sampleUrl);
+            setTimer();
+
         }
-        else
-            System.out.println("Not having a URL");
-      
     }
+    
+  
     
     
     
@@ -74,6 +87,38 @@ public class ClientConnection {
             Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(urlToRead);
+      }
+      
+      
+      private static void setTimer(){
+          Timer timer = new Timer();
+          TimerTask myTask = new TimerTask() {
+              @Override
+              public void run() {
+                  checkURLAvailable();
+                 
+              }
+          };
+
+          timer.schedule(myTask, 2000, 2000);
+      }
+      
+      private static void checkURLAvailable(){
+      
+          try{
+          
+          if(remoteObject.isHavingHostURL()) {
+            String sampleUrl=remoteObject.getURL();
+            System.out.println(sampleUrl);
+            ClientConnection.sendGet(sampleUrl);
+        }
+        else
+            System.out.println("Not having a URL");
+          }catch(java.lang.reflect.UndeclaredThrowableException ex){
+              System.out.println("Server gone Offline");
+              setClient();
+          }
+          
       }
     
     
