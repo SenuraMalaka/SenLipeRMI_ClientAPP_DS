@@ -35,8 +35,12 @@ public class GETRequestHandlers {
     
     
     
-       public static String sendGetsToCalculateTimeElapsed(String urlToRead){
+       public static boolean sendGetsToCalculateTimeElapsed(String urlToRead){
        
+           System.out.println("ClientConnection.isgetCountCalculated >> "+ClientConnection.isgetCountCalculated);
+           System.out.println("getcount >> "+ClientConnection.getCount);
+           System.out.println("\n\n");
+           
         if(!ClientConnection.isgetCountCalculated){
             
                try {
@@ -50,20 +54,24 @@ public class GETRequestHandlers {
            long timeElapsed=System.currentTimeMillis()-ClientConnection.startMilisecs;
            
            //measuring for 10secs
-           if((timeElapsed/1000)>=10){
+           if((timeElapsed/1000)>10 && !ClientConnection.isgetCountCalculated){
                ClientConnection.isgetCountCalculated=true;
                System.out.println("get count = "+ClientConnection.getCount+" gets per 10secs");
+               
+               ClientControllerCon.setControllerVar(ClientConnection.getCount, "111.111.111.111");////////newnewnew
                
                //re init
                ClientConnection.getCount=0; ClientConnection.startMilisecs=0;
                
-               return "10Secs gone";
+               ClientControllerCon.start();
+               
+               return true;//10 secs gone
            }
            
-           return "still counting";
+          
         }
         
-        return "nothing";
+        return false;
       }
        
        

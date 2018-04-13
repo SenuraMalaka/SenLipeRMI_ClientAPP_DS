@@ -5,20 +5,16 @@
  */
 package com.example.senura.lipermitest1;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Calendar;
+
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import net.sf.lipermi.handler.CallHandler;
 import net.sf.lipermi.net.Client;
-import org.w3c.dom.css.Counter;
+
 
 /**
  *
@@ -29,13 +25,17 @@ public class ClientConnection {
     private static TestService remoteObject=null;
     private static boolean isServerCameOnline=false;
     
+    private static String DDOS_URL;
+    
     //to calculate the gets per sec
-    static long startMilisecs=0;
-    static int getCount=0;
-    static boolean isgetCountCalculated=false;
+    static long startMilisecs;
+    static int getCount;
+    static boolean isgetCountCalculated;
+    static boolean isCountFirstRun;
     
     
-    public static void main(String[] args) {   
+    public static void main(String[] args) {
+        initGlobalVariables();
         setTimerToCheckServerAvailability();
     }
     
@@ -52,7 +52,7 @@ public class ClientConnection {
             client = new Client(remoteHost, portWasBinded, callHandler);
             isServerCameOnline=true;
         } catch (IOException ex) {
-            System.out.println("server is not online");
+            System.out.println(TimeClass.getTime()+" server is not online");
         }
         
         
@@ -70,25 +70,41 @@ public class ClientConnection {
   
       
       
-      private static void checkURLAvailable(){
+      private static boolean checkURLAvailable(){
       
           try{
           
+              
           if(remoteObject.isHavingHostURL()) {
               
-            if(!isgetCountCalculated)countNumOfConPerSec();///////
-              
-            String sampleUrl=remoteObject.getURL();
-            System.out.println(sampleUrl);
-            GETRequestHandlers.sendGet(sampleUrl);
+              System.out.println("isCountFirstRun = "+isCountFirstRun+" isgetCountCalculated = "+isgetCountCalculated);
+            if(!isgetCountCalculated && isCountFirstRun){
+                
+                System.out.println("inside if");
+                
+            DDOS_URL=remoteObject.getURL();
+            System.out.println(DDOS_URL);
+            
+            countNumOfConPerSec();///////
+            isCountFirstRun=false;
+            
+            }
+            
+            
+            
+            //GETRequestHandlers.sendGet(DDOS_URL);
         }
         else
-            System.out.println("Not having a URL");
+            System.out.println(TimeClass.getTime()+" Not having a URL");
           }catch(java.lang.reflect.UndeclaredThrowableException ex){
-              System.out.println("Server gone Offline");
-              setClient();
+              System.out.println(TimeClass.getTime()+" Server gone Offline");
+              isServerCameOnline=false;
+              initGlobalVariables();
+              setTimerToCheckServerAvailability();
+              //setClient();
+              return false;
           }
-          
+          return true;
       }
       
       
@@ -99,12 +115,17 @@ public class ClientConnection {
           TimerTask myTask = new TimerTask() {
               @Override
               public void run() {
-                  checkURLAvailable();
+                  System.out.println(">>>>>>>>URLAvailability ran");
+                  if(!checkURLAvailable()) {
+                      System.out.println("-------------------------------------------");
+                      
+                      timer.cancel();
+                  }
                  
               }
           };
 
-          timer.schedule(myTask, 2000, 2000);
+          timer.schedule(myTask, 3000, 3000);
       }
       
       
@@ -113,6 +134,8 @@ public class ClientConnection {
           TimerTask myTask = new TimerTask() {
               @Override
               public void run() {
+                  System.out.println("setTimerToCheckServerAvailability ran");
+                  if(isCountFirstRun==true && isgetCountCalculated==true) isgetCountCalculated=false;
                   setClient();
                   if(isServerCameOnline) timer.cancel();
               }
@@ -127,15 +150,15 @@ public class ClientConnection {
           TimerTask myTask = new TimerTask() {
               @Override
               public void run() {
-                  
-                  if(GETRequestHandlers.sendGetsToCalculateTimeElapsed(sampleUrl).equals("10Secs gone")){
-                     
+                  System.out.println("setTimerToCountGets ran");
+                  if(GETRequestHandlers.sendGetsToCalculateTimeElapsed(sampleUrl)){
+                      System.out.println("CANCEEEEEEEEELLL");
                   timer.cancel();
                   }
               }
           };
 
-          timer.schedule(myTask, 2000, 2000);
+          timer.schedule(myTask, 1000, 1000);
       }
       
       
@@ -143,14 +166,28 @@ public class ClientConnection {
          
           if(startMilisecs==0)
           startMilisecs= System.currentTimeMillis();
+          
+          if(!DDOS_URL.equals(""))setTimerToCountGets(DDOS_URL);
          
-         if(remoteObject.isHavingHostURL()) {
-            String sampleUrl=remoteObject.getURL();
-            
-            
-         setTimerToCountGets(sampleUrl);
-         }
          
+//         if(remoteObject.isHavingHostURL()) {
+//            String sampleUrl=remoteObject.getURL();
+//            
+//            
+//         setTimerToCountGets(sampleUrl);
+//         }
+         
+      }
+      
+      
+      private static void initGlobalVariables(){
+      
+            DDOS_URL="";
+            startMilisecs=0;
+            getCount=0;
+            isgetCountCalculated=false;
+            isCountFirstRun=true;
+    
       }
       
       
