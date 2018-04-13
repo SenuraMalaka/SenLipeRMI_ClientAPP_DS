@@ -5,7 +5,10 @@
         <group>
             <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/TestService.java</file>
             <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/GETRequestHandlers.java</file>
+            <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/TimeClass.java</file>
+            <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/TestServiceController.java</file>
             <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/ClientConnection.java</file>
+            <file>file:/Users/senura/NetBeansProjects/SenLipeRMI_ClientAPP_DS/src/com/example/senura/lipermitest1/ClientControllerCon.java</file>
         </group>
     </open-files>
 </project-private>
