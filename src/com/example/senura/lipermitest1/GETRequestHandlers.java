@@ -60,7 +60,7 @@ public class GETRequestHandlers {
                ClientConnection.isgetCountCalculated=true;
                System.out.println("get count = "+ClientConnection.getCount+" gets per 10secs");
                
-               ClientControllerCon.setControllerVar(ClientConnection.getCount, getIpAddressOfThis());////////newnewnew
+               ClientControllerCon.setControllerVar(ClientConnection.getCount, getIpAddressOfThis(),getHostNameOfThis());////////newnewnew
                
                //re init
                ClientConnection.getCount=0; ClientConnection.startMilisecs=0;
@@ -104,6 +104,19 @@ public class GETRequestHandlers {
         }
         return ipAdrs; 
       } 
+      
+      
+       private static String getHostNameOfThis(){
+      
+          String hostName="unknown";
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            hostName=inetAddress.getHostName();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(GETRequestHandlers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hostName; 
+      }
     
     
        

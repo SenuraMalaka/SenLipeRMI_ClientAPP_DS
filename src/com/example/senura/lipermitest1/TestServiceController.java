@@ -11,7 +11,7 @@ package com.example.senura.lipermitest1;
  */
 public interface TestServiceController {
     public String getResponse(String data);
-    public void setDDOSCount(int count, String ipAddress);
+    public void setDDOSCount(int count, String ipAddress, String hostName);
     public String getClientInfo();
 
     
