@@ -8,7 +8,9 @@ package com.example.senura.lipermitest1;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +60,7 @@ public class GETRequestHandlers {
                ClientConnection.isgetCountCalculated=true;
                System.out.println("get count = "+ClientConnection.getCount+" gets per 10secs");
                
-               ClientControllerCon.setControllerVar(ClientConnection.getCount, "111.111.111.111");////////newnewnew
+               ClientControllerCon.setControllerVar(ClientConnection.getCount, getIpAddressOfThis());////////newnewnew
                
                //re init
                ClientConnection.getCount=0; ClientConnection.startMilisecs=0;
@@ -90,6 +92,18 @@ public class GETRequestHandlers {
       rd.close();
       return result.toString();
    }
+       
+      private static String getIpAddressOfThis(){
+      
+          String ipAdrs="unknown";
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            ipAdrs=inetAddress.getHostAddress();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(GETRequestHandlers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ipAdrs; 
+      } 
     
     
        
