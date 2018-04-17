@@ -78,6 +78,28 @@ public class GETRequestHandlers {
        
        
        
+       public static boolean sendGets(String url,int amount){
+           int failures=0;
+                System.out.println("sendGets() ran");
+                
+         for(int i=0;i<amount;i++){
+       try {
+               System.out.println(i+" getHTML is :"+getHTML(url));
+               
+               
+           } catch (Exception ex) {
+               failures++;
+           }
+         }
+         
+         System.out.println("sendGets() finished");
+         
+           return (failures<(amount/2));
+       
+       }
+       
+       
+       
        
        static String getHTML(String urlToRead) throws Exception {
       StringBuilder result = new StringBuilder();
@@ -117,6 +139,10 @@ public class GETRequestHandlers {
         }
         return hostName; 
       }
+       
+       
+       
+
     
     
        

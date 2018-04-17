@@ -13,6 +13,8 @@ public interface TestServiceController {
     public String getResponse(String data);
     public void setDDOSCount(int count, String ipAddress, String hostName);
     public String getClientInfo();
-
-    
+    public int getNumofDDOSToBeExcecuted(String ipAddress);
+    public void setProposedDDOSCount(int count);
+    public boolean isProposedDDOSCountSet();
+   
 }
