@@ -76,6 +76,11 @@ public class ClientControllerCon {
            
            return ddosNos;
        }
+        
+        
+        public static void sendGetLoopFinishedToControlServer(int getCount, String IPAddress, String hostName){
+         remoteObject.sendGetDone(getCount, IPAddress, hostName);
+        }
        
        
        

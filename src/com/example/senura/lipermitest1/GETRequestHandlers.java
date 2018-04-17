@@ -82,17 +82,22 @@ public class GETRequestHandlers {
            int failures=0;
                 System.out.println("sendGets() ran");
                 
+          int successfulGetCounts=0;
+                
          for(int i=0;i<amount;i++){
        try {
                System.out.println(i+" getHTML is :"+getHTML(url));
-               
+               successfulGetCounts++;
                
            } catch (Exception ex) {
                failures++;
            }
          }
          
+         ClientControllerCon.sendGetLoopFinishedToControlServer(successfulGetCounts, getIpAddressOfThis(), getHostNameOfThis());
+         
          System.out.println("sendGets() finished");
+         
          
            return (failures<(amount/2));
        
